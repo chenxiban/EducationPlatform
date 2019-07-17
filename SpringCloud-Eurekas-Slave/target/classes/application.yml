@@ -1,0 +1,34 @@
+server:
+#项目端口号
+  port: 8890
+
+logging:
+  pattern:
+    console: "%d - %msg%n"
+  #path: D:\Logback-Test\             #日志输出到指定文件夹下默认名为spring.log
+  file: D:\Logback-Test\wordimg.log  #日志输出到指定文件
+  #level: debug   #指定级别
+  level:         #指定输出某个类的日志
+    com.cnooc.wordimg.LoggerTest2: debug
+
+spring:
+  application:
+    name: eureka-server
+  security:
+    user:
+      name: admin
+      password: 123123
+
+eureka:
+  instance:
+  #eureka实例主机名称
+    hostname: slave
+  client:
+  #关闭eureka的客户端行为:注册服务
+    registerWithEureka: false
+    #关闭eureka的客户端行为:订阅服务
+    fetchRegistry: false
+    renewalPercentThreshold: 0.45
+    serviceUrl:
+    #eureka注册中心地址
+      defaultZone: http://master:8888/eureka/,http://backup:8889/eureka/

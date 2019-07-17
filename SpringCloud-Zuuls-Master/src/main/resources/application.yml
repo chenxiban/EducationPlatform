@@ -1,0 +1,105 @@
+eureka:
+  instance:
+    # 每隔10s发送一次心跳
+    lease-renewal-interval-in-seconds: 10
+    # 告知服务端30秒还未收到心跳的话，就将该服务移除列表
+    lease-expiration-duration-in-seconds: 30
+  client:
+    serviceUrl: 
+    #eureka注册中心地址
+      defaultZone: http://localhost:8888/eureka/
+      #defaultZone: http://localhost:8888/eureka/,http://localhost:8889/eureka/,http://localhost:8890/eureka/
+
+server:
+#项目端口号
+  port: 3010
+spring:
+  application: 
+  #服务名称,随便写
+    name: serve-zuul
+  #http:
+    #multipart: 
+      #file-size-threshold: 1Mb
+      #max-file-size: 1000Mb
+      #max-request-size: 1000Mb
+
+logging:
+  pattern:
+    console: "%d - %msg%n"
+  #path: D:\Logback-Test\             #日志输出到指定文件夹下默认名为spring.log
+  file: D:\Logback-Test\wordimg.log  #日志输出到指定文件
+  #level: debug   #指定级别
+  level:         #指定输出某个类的日志
+    com.cnooc.wordimg.LoggerTest2: debug
+    
+# 下面整个树都非必须，如果不配置，
+#将默认使用 http://GATEWAY:GATEWAY_PORT/想要访问的Eureka服务id的小写/** 
+#路由到：http://想要访问的Eureka服务id的小写:该服务端口/**
+#------------------------------ 默认行为 ----------------------------------------
+#使用Eureka注册中心则zuul服务网关会自动生成以下路由规则
+zuul: #需要忽略的头部信息，不在传播到其他服务
+  #add-host-header: true
+  sensitive-headers: Access-Control-Allow-Origin 
+  ignored-headers: Access-Control-Allow-Origin,H-APP-Id,Token,APPToken
+  host: 
+    socket-timeout-millis: 30000
+    connect-timeout-millis: 30000
+    max-total-connections: 30000
+
+#hystrix: 
+  #command: 
+    #default: 
+      #execution: 
+        #isolation: 
+          #thread: 
+           # timeoutInMilliseconds: 60000
+
+ribbon:
+  #方法调用处理时间
+  ReadTimeout: 30000
+  #连接时间
+  ConnectTimeout: 60000
+  ##最大自动重试次数
+  maxAutoRetries: 0
+  ## 换实例重试次数
+  MaxAutoRetriesNextServer: 1
+    
+security:
+  oauth2:
+    resource:
+      ####从认证授权中心上验证token
+      tokenInfoUri: http://localhost:3010/serve-oauth/oauth/check_token
+      preferTokenInfo: true
+    client:
+      accessTokenUri: http://localhost:3010/serve-oauth/oauth/token
+      userAuthorizationUri: http://localhost:3010/serve-oauth/oauth/authorize
+      clientId: client_1
+      clientSecret: 123456
+
+#zuul:
+#  routes:
+#    api-a:
+#      path: /service-provider/**
+#      service-id: service-provider
+#    api-b:
+#      path: /service-consumer/**
+#      service-id: service-consumer
+
+#访问http://127.0.0.1:8889/service-provider/getFuture?token=666
+#会被服务网关zuul转发到http://127.0.0.1:8002/getFuture?token=666
+#http://127.0.0.1:8889/service-consumer/getProviderFuture?token=666
+#会被服务网关zuul被转发到http://127.0.0.1:8001/getProviderFutur?token=666
+#-------------------------------- 自定义配置  --------------------------------------
+#亦可以自定义配置zuul服务网关的路由规则
+#zuul:
+#  routes:
+#    api-a:
+#      path: /api-provider/**
+#      service-id: service-provider
+#    api-b:
+#      path: /api-consumer/**
+#      service-id: service-consumer
+
+#发送请求http://127.0.0.1:8889/api-consumer/getProviderFuture?token=666
+#会被服务网关zuul被转发到http://127.0.0.1:8001/getProviderFutur?token=666
+

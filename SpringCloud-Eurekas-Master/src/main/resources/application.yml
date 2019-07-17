@@ -1,0 +1,40 @@
+server:
+#项目端口号
+  port: 8888
+
+logging:
+  pattern:
+    console: "%d - %msg%n"
+  #path: D:\Logback-Test\             #日志输出到指定文件夹下默认名为spring.log
+  file: D:\Logback-Test\wordimg.log  #日志输出到指定文件
+  #level: debug   #指定级别
+  level:         #指定输出某个类的日志
+    com.cnooc.wordimg.LoggerTest2: debug
+
+spring:
+  application:
+    name: eureka-server
+
+eureka:
+  #eureka实例定义
+  instance:
+  #eureka实例主机名称
+    hostname: master
+  #客户端进行Eureka注册的配置
+  client:
+    #关闭eureka的客户端行为:注册服务
+    registerWithEureka: false
+    #关闭eureka的客户端行为:订阅服务
+    fetchRegistry: false
+    # 心跳检测的频率
+    renewalPercentThreshold: 0.45
+    serviceUrl:
+    #eureka注册中心地址
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      #defaultZone: http://backup:8889/eureka/,http://slave:8890/eureka/
+  server:
+    # 关闭自我保护机制，防止失效的服务也被一直访问 (Spring Cloud默认该配置是 true)
+    enable-self-preservation: false
+    # 每隔10s扫描服务列表，该配置可以修改检查失效服务的时间，每隔10s检查失效服务，并移除列表 (Spring Cloud默认该配置是 60s)
+    eviction-interval-timer-in-ms: 10000
+
